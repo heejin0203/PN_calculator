@@ -112,7 +112,7 @@ td .cell{width:100%;min-width:104px}
       <thead><tr><th>HD (목표 비율, 목표 총 공급량)</th><th>EN 공급량</th><th>수액 속도</th></tr></thead>
       <tbody id="rows"></tbody>
     </table>
-    <p class="note">※ EN이 목표를 초과하면 PN은 0으로 처리. EN 불가 시 PN은 목표 전량.</p>
+    <p class="note">※ EN이 목표를 초과하면 PN은 0으로 처리. </p>
   </section>
 </main>
 
@@ -178,7 +178,7 @@ function render(){
     $('tot'+i).textContent=fmt(total)+'kcal';
     var res=lookup(sel.value,rem);
     $('rate'+i).innerHTML=res===null?'<span class="muted">-</span>':fmt(res.rate)+' <em>cc/hr</em>';
-    $('cap'+i).textContent=res&&res.over?'표 최대 속도':'';
+    $('cap'+i).textContent=res&&res.over?'최대 속도':'';
   });
 }
 
