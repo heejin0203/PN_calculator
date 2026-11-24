@@ -178,7 +178,7 @@ function render(){
     $('tot'+i).textContent=fmt(total)+'kcal';
     var res=lookup(sel.value,rem);
     $('rate'+i).innerHTML=res===null?'<span class="muted">-</span>':fmt(res.rate)+' <em>cc/hr</em>';
-    $('cap'+i).textContent=res&&res.over?'최대 속도':'';
+    $('cap'+i).textContent=res&&res.over?'※ 최대 속도':'';
   });
 }
 
