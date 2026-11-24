@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PN 계산기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#eef2f6; --card:#ffffff; --ink:#18222e; --muted:#5d6b7a; --line:#d3dce6;
+  --navy:#1F4E78; --navy-ink:#ffffff;
+  --in:#FFE94A; --in-ink:#1a1a1a; --in-line:#d9bf00;
+  --out:#D6EAF8; --out-ink:#0f2c44; --out-line:#a9cbe6;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f141a; --card:#171e26; --ink:#e8eef5; --muted:#93a1b1; --line:#2a3541;
+    --navy:#2a5f8f; --out:#1d3a52; --out-ink:#dcecf9; --out-line:#2f5878;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f141a; --card:#171e26; --ink:#e8eef5; --muted:#93a1b1; --line:#2a3541;
+  --navy:#2a5f8f; --out:#1d3a52; --out-ink:#dcecf9; --out-line:#2f5878;
+  color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%}
+.wrap{max-width:780px;margin:0 auto;padding:28px 16px 40px}
+h1{margin:0;font-size:30px;font-weight:700;letter-spacing:-.01em}
+.by{margin:2px 0 0;color:var(--muted);font-size:13px}
+.how{margin:18px 0 6px;color:var(--ink);font-size:14.5px}
+.legend{display:flex;gap:14px;align-items:center;margin:0 0 18px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px;border:1px solid}
+.legend .li{background:var(--in);border-color:var(--in-line)}
+.legend .lo{background:var(--out);border-color:var(--out-line)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 18px 8px;margin-bottom:16px}
+.top{display:grid;grid-template-columns:1fr 1fr;gap:0 36px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 0 12px}
+.lab{font-size:14.5px;font-weight:500}
+.cell{display:flex;align-items:baseline;justify-content:flex-end;gap:6px;width:156px;min-height:42px;
+  padding:6px 12px;border-radius:8px;border:1.5px solid;font-variant-numeric:tabular-nums}
+.cell em{font-style:normal;font-size:13px;opacity:.75;white-space:nowrap}
+.cell.in{background:var(--in);color:var(--in-ink);border-color:var(--in-line)}
+.cell.out{background:var(--out);color:var(--out-ink);border-color:var(--out-line);font-weight:700;font-size:17px}
+.cell input,.cell select{all:unset;box-sizing:border-box;width:100%;text-align:right;font:inherit;font-weight:700;font-size:17px;color:inherit}
+.cell input{min-width:0}
+.cell:focus-within{outline:3px solid var(--navy);outline-offset:2px}
+.cell select{cursor:pointer;text-align:left;font-size:15px}
+.cell.sel{width:auto;min-width:220px}
+.nts{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-bottom:12px}
+table{width:100%;border-collapse:separate;border-spacing:0 8px;margin:0 0 4px}
+thead th{background:var(--navy);color:var(--navy-ink);font-weight:500;font-size:13px;padding:9px 8px;text-align:center}
+thead th:first-child{border-radius:8px 0 0 8px}
+thead th:last-child{border-radius:0 8px 8px 0}
+tbody td{padding:0 4px;text-align:center;vertical-align:middle;font-variant-numeric:tabular-nums}
+tbody td:first-child{font-weight:700;text-align:left;padding-left:10px}
+td .cell{width:100%;min-width:104px}
+.plain{font-size:16px}
+.muted{color:var(--muted)}
+.cap{display:block;font-size:11px;color:var(--muted);margin-top:2px;min-height:0}
+.note{margin:6px 0 12px;font-size:13px;color:var(--muted)}
+@media (max-width:640px){
+  .wrap{padding-top:20px}
+  .top{grid-template-columns:1fr}
+  .cell{width:150px}
+  thead{display:none}
+  table,tbody{display:block}
+  tbody tr{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px;margin-bottom:12px;border:1px solid var(--line);border-radius:10px}
+  tbody td{display:block;padding:0;text-align:left}
+  tbody td:first-child{grid-column:1/-1;padding:0;font-size:17px}
+  tbody td::before{content:attr(data-label);display:block;font-size:12px;color:var(--muted);margin-bottom:3px;font-weight:400}
+  tbody td:first-child::before{display:none}
+  td .cell{min-width:0}
+  .cell.sel{width:100%}
+}
+@media (prefers-reduced-motion:no-preference){.cell{transition:background-color .15s}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <h1>PN 계산기</h1>
+  <p class="by">made by. 의정부성모병원 NST 2026</p>
+  <p class="how">노란 칸에 키, 목표 열량, 일별 EN 공급량(kcal)을 입력하세요. 처음 입력된 값은 예시입니다.</p>
+  <p class="legend"><span><i class="li"></i>입력</span><span><i class="lo"></i>계산 결과</span></p>
+
+  <section class="panel">
+    <div class="top">
+      <div>
+        <label class="row" for="h"><span class="lab">키</span><span class="cell in"><input id="h" type="number" inputmode="decimal" min="0" step="any" value="170"><em>cm</em></span></label>
+        <div class="row"><span class="lab">TCN 계산값</span><output class="cell out" id="tcn"></output></div>
+        <label class="row" for="target"><span class="lab">목표 열량</span><span class="cell in"><input id="target" type="number" inputmode="decimal" min="0" step="any" value="1600"><em>kcal</em></span></label>
+      </div>
+      <div>
+        <label class="row" for="dex"><span class="lab">5% dex 공급 속도</span><span class="cell in"><input id="dex" type="number" inputmode="decimal" min="0" step="any" value="0"><em>cc/hr</em></span></label>
+        <div class="row"><span class="lab">5% dex 공급 열량</span><output class="cell out" id="dexk"></output></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="nts">
+      <label class="lab" for="nts">NTS 선택</label>
+      <span class="cell in sel"><select id="nts"></select></span>
+    </div>
+    <table>
+      <thead><tr><th>HD</th><th>목표 비율</th><th>목표 총 공급량</th><th>EN 공급량</th><th>TCN-(EN+5%) (kcal)</th><th>NTS</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <p class="note">※ EN이 목표를 초과하면 PN은 0으로 처리. EN 불가 시 PN은 목표 전량.</p>
+  </section>
+</main>
+
+<script>
+// 속도표 (cc/hr → kcal), 시트의 NTS 제품별 표와 동일
+var RATES=[20,30,40,50,60,70,80];
+var TABLE={
+  POPE:[337,504,673,840,1010,null,null],
+  SMKP:[332,497,664,828,996,1118,1326],
+  OLN:[456,684,912,1140,1368,null,null],
+  NTS:[427,640,854,null,null,null,null],
+  SMOK:[524,785,1048,1308,1571,1766,2095]
+};
+var NAMES={POPE:'말초올리멜',SMKP:'말초스모프',OLN:'중심올리멜',NTS:'중심엔텐스',SMOK:'중심스모프'};
+// HD별 목표 비율 (프로토콜표의 공급 비율)
+var HD=[['HD2',0.25],['HD3',0.5],['HD4',0.75],['HD5~',1]];
+
+var $=function(id){return document.getElementById(id)};
+var clean=function(v){return +Number(v).toPrecision(15)};
+var round100=function(v){return Math.round(+(clean(v)/100).toPrecision(12))*100};
+var nf=new Intl.NumberFormat('ko-KR',{maximumFractionDigits:0});
+var fmt=function(v){return nf.format(clean(v))};
+var num=function(el){var v=parseFloat(el.value);return isFinite(v)&&v>0?v:0};
+
+// select 채우기
+var sel=$('nts');
+sel.innerHTML='<option value="">선택 안 함</option>'+Object.keys(TABLE).map(function(k){
+  return '<option value="'+k+'">'+k+' ('+NAMES[k]+')</option>';
+}).join('');
+sel.value='NTS';
+
+// 표 행 만들기
+var tbody=$('rows');
+tbody.innerHTML=HD.map(function(r,i){
+  return '<tr>'+
+   '<td data-label="HD">'+r[0]+'</td>'+
+   '<td data-label="목표 비율" class="plain muted">'+Math.round(r[1]*100)+'%</td>'+
+   '<td data-label="목표 총 공급량"><output class="cell out" id="tot'+i+'"></output></td>'+
+   '<td data-label="EN 공급량 (kcal)"><label class="cell in"><input id="en'+i+'" type="number" inputmode="decimal" min="0" step="any" value="0" aria-label="'+r[0]+' EN 공급량"><em>kcal</em></label></td>'+
+   '<td data-label="TCN-(EN+5%) (kcal)" class="plain" id="rem'+i+'"></td>'+
+   '<td data-label="NTS 공급 속도"><output class="cell out" id="rate'+i+'"></output><span class="cap" id="cap'+i+'"></span></td>'+
+   '</tr>';
+}).join('');
+
+function lookup(code,e){
+  var col=TABLE[code]; if(!col) return null;
+  var rate=0,max=0;
+  for(var i=0;i<col.length;i++){
+    if(col[i]===null) continue;
+    max=col[i];
+    if(col[i]<=e) rate=RATES[i];
+  }
+  return {rate:rate,over:e>max};
+}
+
+function render(){
+  var tcn=round100(num($('h'))*num($('h'))*22*0.0001*25);
+  $('tcn').innerHTML=fmt(tcn)+' <em>kcal</em>';
+  var dexK=num($('dex'))*4.07;
+  $('dexk').innerHTML=fmt(dexK)+' <em>kcal</em>';
+  var target=num($('target'));
+  HD.forEach(function(r,i){
+    var total=round100(target*r[1]);
+    var en=num($('en'+i));
+    var rem=clean(Math.max(0,total-en-dexK));
+    $('tot'+i).innerHTML=fmt(total)+' <em>kcal</em>';
+    $('rem'+i).textContent=fmt(rem);
+    var res=lookup(sel.value,rem);
+    $('rate'+i).innerHTML=res===null?'<span class="muted">-</span>':fmt(res.rate)+' <em>cc/hr</em>';
+    $('cap'+i).textContent=res&&res.over?'표 최대 속도':'';
+  });
+}
+
+document.addEventListener('input',render);
+document.addEventListener('change',render);
+document.addEventListener('focusin',function(e){if(e.target.tagName==='INPUT')e.target.select()});
+render();
+</script>
+</body>
+</html>
