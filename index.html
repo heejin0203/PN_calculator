@@ -57,7 +57,7 @@ h1{margin:0;font-size:30px;font-weight:700;letter-spacing:-.01em}
 .cell:focus-within{outline:3px solid var(--navy);outline-offset:2px}
 .cell select{cursor:pointer;text-align:left;font-size:15px}
 .cell.sel{width:auto;min-width:220px}
-.nts{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-bottom:12px}
+.nts{display:flex;align-items:center;justify-content:flex-end;gap:12px;flex-wrap:wrap;padding-bottom:12px}
 table{width:100%;border-collapse:separate;border-spacing:0 8px;margin:0 0 4px}
 thead th{background:var(--navy);color:var(--navy-ink);font-weight:500;font-size:13px;padding:9px 8px;text-align:center}
 thead th:first-child{border-radius:8px 0 0 8px}
@@ -65,7 +65,7 @@ thead th:last-child{border-radius:0 8px 8px 0}
 tbody td{padding:0 4px;text-align:center;vertical-align:middle;font-variant-numeric:tabular-nums}
 tbody td:first-child{font-weight:700;text-align:left;padding-left:10px}
 td .cell{width:100%;min-width:104px}
-.plain{font-size:16px}
+.ratio{margin-left:8px;font-size:13px;font-weight:400;color:var(--muted)}
 .muted{color:var(--muted)}
 .cap{display:block;font-size:11px;color:var(--muted);margin-top:2px;min-height:0}
 .note{margin:6px 0 12px;font-size:13px;color:var(--muted)}
@@ -109,11 +109,11 @@ td .cell{width:100%;min-width:104px}
 
   <section class="panel">
     <div class="nts">
-      <label class="lab" for="nts">NTS 선택</label>
-      <span class="cell in sel"><select id="nts"></select></span>
+      
+      <span class="cell in sel"><select id="nts" aria-label="제품 선택"></select></span>
     </div>
     <table>
-      <thead><tr><th>HD</th><th>목표 비율</th><th>목표 총 공급량</th><th>EN 공급량</th><th>TCN-(EN+5%) (kcal)</th><th>NTS</th></tr></thead>
+      <thead><tr><th>HD (목표 비율)</th><th>목표 총 공급량</th><th>EN 공급량</th><th>수액 속도</th></tr></thead>
       <tbody id="rows"></tbody>
     </table>
     <p class="note">※ EN이 목표를 초과하면 PN은 0으로 처리. EN 불가 시 PN은 목표 전량.</p>
@@ -152,12 +152,10 @@ sel.value='NTS';
 var tbody=$('rows');
 tbody.innerHTML=HD.map(function(r,i){
   return '<tr>'+
-   '<td data-label="HD">'+r[0]+'</td>'+
-   '<td data-label="목표 비율" class="plain muted">'+Math.round(r[1]*100)+'%</td>'+
+   '<td data-label="HD">'+r[0]+'<span class="ratio">'+Math.round(r[1]*100)+'%</span></td>'+
    '<td data-label="목표 총 공급량"><output class="cell out" id="tot'+i+'"></output></td>'+
    '<td data-label="EN 공급량 (kcal)"><label class="cell in"><input id="en'+i+'" type="number" inputmode="decimal" min="0" step="any" value="0" aria-label="'+r[0]+' EN 공급량"><em>kcal</em></label></td>'+
-   '<td data-label="TCN-(EN+5%) (kcal)" class="plain" id="rem'+i+'"></td>'+
-   '<td data-label="NTS 공급 속도"><output class="cell out" id="rate'+i+'"></output><span class="cap" id="cap'+i+'"></span></td>'+
+   '<td data-label="수액 속도"><output class="cell out" id="rate'+i+'"></output><span class="cap" id="cap'+i+'"></span></td>'+
    '</tr>';
 }).join('');
 
@@ -183,7 +181,6 @@ function render(){
     var en=num($('en'+i));
     var rem=clean(Math.max(0,total-en-dexK));
     $('tot'+i).innerHTML=fmt(total)+' <em>kcal</em>';
-    $('rem'+i).textContent=fmt(rem);
     var res=lookup(sel.value,rem);
     $('rate'+i).innerHTML=res===null?'<span class="muted">-</span>':fmt(res.rate)+' <em>cc/hr</em>';
     $('cap'+i).textContent=res&&res.over?'표 최대 속도':'';
