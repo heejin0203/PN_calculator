@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>PN 계산기</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1F4E78">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PN 계산기">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
@@ -13,7 +21,7 @@
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
   --bg:#eef2f6; --card:#ffffff; --ink:#18222e; --muted:#5d6b7a; --line:#d3dce6;
-  --navy:#1F4E78; --navy-ink:#ffffff;
+  --navy:#1F4E78;
   --in:#FFE94A; --in-ink:#1a1a1a; --in-line:#d9bf00;
   --out:#D6EAF8; --out-ink:#0f2c44; --out-line:#a9cbe6;
   color-scheme:light;
@@ -38,96 +46,96 @@ body{margin:0;background:var(--bg);color:var(--ink);
 .wrap{max-width:780px;margin:0 auto;padding:28px 16px 40px}
 h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-.01em}
 .by{margin:2px 0 0;color:var(--muted);font-size:13px}
-.how{margin:14px 0 6px;color:var(--ink);font-size:13.5px}
-.legend{display:flex;gap:14px;align-items:center;margin:0 0 18px;font-size:13px;color:var(--muted)}
+.how{margin:14px 0 6px;font-size:13.5px}
+.legend{display:flex;gap:14px;align-items:center;margin:0 0 16px;font-size:13px;color:var(--muted)}
 .legend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px;border:1px solid}
 .legend .li{background:var(--in);border-color:var(--in-line)}
 .legend .lo{background:var(--out);border-color:var(--out-line)}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 18px 8px;margin-bottom:16px}
-.top{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:520px;padding-bottom:12px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 16px 6px;margin-bottom:16px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:end;margin-bottom:12px}
 .fld{display:flex;flex-direction:column;gap:4px;min-width:0}
-.fld.n{grid-column:1}
-.lab{font-size:13px;font-weight:500}
+.lab{font-size:12.5px;font-weight:500;line-height:1.3}
 .cell{display:flex;align-items:baseline;justify-content:flex-end;gap:5px;width:100%;min-height:38px;
   padding:5px 10px;border-radius:8px;border:1.5px solid;font-variant-numeric:tabular-nums}
 .cell em{font-style:normal;font-size:12px;opacity:.75;white-space:nowrap}
 .cell.in{background:var(--in);color:var(--in-ink);border-color:var(--in-line)}
 .cell.out{background:var(--out);color:var(--out-ink);border-color:var(--out-line);font-weight:700;font-size:16px}
-.cell input,.cell select{all:unset;box-sizing:border-box;width:100%;text-align:right;font:inherit;font-weight:700;font-size:16px;color:inherit}
-.cell input{min-width:0}
+.cell input,.cell select{all:unset;box-sizing:border-box;width:100%;min-width:0;text-align:right;font:inherit;font-weight:700;font-size:16px;color:inherit}
+.cell input{text-overflow:ellipsis}
 .cell:focus-within{outline:3px solid var(--navy);outline-offset:2px}
-.cell select{cursor:pointer;text-align:left;font-size:15px}
-.cell.sel{width:auto;min-width:220px}
-.nts{display:flex;align-items:center;justify-content:flex-end;gap:12px;flex-wrap:wrap;padding-bottom:12px}
-table{width:100%;border-collapse:separate;border-spacing:0 8px;margin:0 0 4px}
-thead th{background:var(--navy);color:var(--navy-ink);font-weight:500;font-size:13px;padding:9px 8px;text-align:center}
-thead th:first-child{border-radius:8px 0 0 8px}
-thead th:last-child{border-radius:0 8px 8px 0}
-tbody td{padding:0 4px;text-align:center;vertical-align:middle;font-variant-numeric:tabular-nums}
-tbody td:first-child{font-weight:700;text-align:left;padding-left:10px}
-td .cell{width:100%;min-width:104px}
+.top .cell{justify-content:flex-start}
+.top .cell input{text-align:left}
+.top .cell em{margin-left:auto}
+#dexk{justify-content:flex-end;font-weight:400}
+#dexk em{margin-left:0}
+#dexk .v{font-weight:700}
+.cell.sel{position:relative;align-items:center}
+.cell.sel select{text-align:left;font-size:14px;cursor:pointer;padding-right:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cell.sel::after{content:"▾";position:absolute;right:10px;font-size:12px;opacity:.7;pointer-events:none}
+.hd{display:grid;grid-template-columns:minmax(150px,1fr) minmax(0,1fr) minmax(0,1fr);gap:6px 10px;align-items:start;
+  padding:12px;margin-bottom:12px;border:1px solid var(--line);border-radius:10px}
+.hdh{grid-column:1;grid-row:1/3;padding-top:20px;font-weight:700;font-size:17px}
 .ratio{margin-left:8px;font-size:13px;font-weight:400;color:var(--muted)}
+.ratio.sub{display:block;margin:2px 0 0}
+.sm{grid-column:2/4;display:flex;flex-wrap:wrap;gap:2px 16px;margin:0;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
 .muted{color:var(--muted)}
-.cap{display:block;font-size:11px;color:var(--muted);margin-top:2px;min-height:0}
+.cap{display:block;font-size:11px;color:var(--muted);margin-top:2px}
 .note{margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.tcn{margin:-4px 2px 14px;font-size:14px}
+.tcn b{font-weight:700;margin-left:8px}
 @media (max-width:640px){
   .wrap{padding-top:20px}
   .panel{padding:14px 12px 4px}
-  thead{display:none}
-  table,tbody{display:block}
-  tbody tr{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px;margin-bottom:12px;border:1px solid var(--line);border-radius:10px}
-  tbody td{display:block;padding:0;text-align:left}
-  tbody td:first-child{grid-column:1/-1;padding:0;font-size:17px}
-  tbody td::before{content:attr(data-label);display:block;font-size:12px;color:var(--muted);margin-bottom:3px;font-weight:400}
-  tbody td:first-child::before{display:none}
-  td .cell{min-width:0}
-  .cell.sel{width:100%}
+  .hd{grid-template-columns:1fr 1fr}
+  .hdh{grid-column:1/-1;grid-row:auto;padding-top:0}
+  .sm{grid-column:1/-1}
 }
-@media (prefers-reduced-motion:no-preference){.cell{transition:background-color .15s}}
 </style>
 </head>
 <body>
 <main class="wrap">
   <h1>PN 계산기</h1>
   <p class="by">made by. 의정부성모병원 NST 2026</p>
-  <p class="how">노란 칸에 키, 목표 열량, 일별 EN 공급량(kcal)을 입력하세요. 처음 입력된 값은 예시입니다.</p>
   <p class="legend"><span><i class="li"></i>입력</span><span><i class="lo"></i>계산 결과</span></p>
 
-  <section class="panel">
-    <div class="top">
-      <label class="fld" for="h"><span class="lab">키</span><span class="cell in"><input id="h" type="number" inputmode="decimal" min="0" step="any" value="170"><em>cm</em></span></label>
-      <div class="fld"><span class="lab">TCN 계산값</span><output class="cell out" id="tcn"></output></div>
-      <label class="fld" for="target"><span class="lab">목표 열량</span><span class="cell in"><input id="target" type="number" inputmode="decimal" min="0" step="any" value="1600"><em>kcal</em></span></label>
-      <label class="fld n" for="dex"><span class="lab">5% dex 공급 속도</span><span class="cell in"><input id="dex" type="number" inputmode="decimal" min="0" step="any" value="0"><em>cc/hr</em></span></label>
-      <div class="fld"><span class="lab">5% dex 공급 열량</span><output class="cell out" id="dexk"></output></div>
+  <section class="panel top">
+    <div class="g3">
+      <label class="fld" for="h"><span class="lab">키</span><span class="cell in"><input id="h" type="number" inputmode="decimal" min="0" step="any"><em>cm</em></span></label>
+      <label class="fld" for="target"><span class="lab">목표 열량</span><span class="cell in"><input id="target" type="number" inputmode="decimal" min="0" step="any"><em>kcal</em></span></label>
+      <label class="fld" for="nts"><span class="lab">PN 제제</span><span class="cell in sel"><select id="nts"></select></span></label>
+    </div>
+    <div class="g3">
+      <label class="fld" for="d5"><span class="lab">5% dex 공급 속도</span><span class="cell in"><input id="d5" type="number" inputmode="decimal" min="0" step="any"><em>cc/hr</em></span></label>
+      <label class="fld" for="d10"><span class="lab">10% dex 공급 속도</span><span class="cell in"><input id="d10" type="number" inputmode="decimal" min="0" step="any"><em>cc/hr</em></span></label>
+      <div class="fld"><span class="lab">dextrose 공급 열량</span><output class="cell out" id="dexk"></output></div>
     </div>
   </section>
 
+  <p class="tcn">TCN (IBW X 25~30)<b id="tcn"></b></p>
+
   <section class="panel">
-    <div class="nts">
-      
-      <span class="cell in sel"><select id="nts" aria-label="제품 선택"></select></span>
-    </div>
-    <table>
-      <thead><tr><th>HD (목표 비율, 목표 총 공급량)</th><th>EN 공급량</th><th>수액 속도</th></tr></thead>
-      <tbody id="rows"></tbody>
-    </table>
-    <p class="note">※ EN이 목표를 초과하면 PN은 0으로 처리. </p>
+    <div id="rows"></div>
+    <p class="note">※ EN이 목표를 초과하면 PN은 0으로 처리.</p>
   </section>
+
 </main>
 
 <script>
-// 속도표 (cc/hr → kcal), 시트의 NTS 제품별 표와 동일
+// PN 제제: 코드, 이름, 용량(ml), 총 열량(kcal), 수액 속도별 열량표 (20~80 cc/hr)
 var RATES=[20,30,40,50,60,70,80];
-var TABLE={
-  POPE:[337,504,673,840,1010,null,null],
-  SMKP:[332,497,664,828,996,1118,1326],
-  OLN:[456,684,912,1140,1368,null,null],
-  NTS:[427,640,854,null,null,null,null],
-  SMOK:[524,785,1048,1308,1571,1766,2095]
-};
-var NAMES={POPE:'말초올리멜',SMKP:'말초스모프',OLN:'중심올리멜',NTS:'중심엔텐스',SMOK:'중심스모프'};
-// HD별 목표 비율 (프로토콜표의 공급 비율)
+var P=[
+ {c:'CP11',n:'(말초)콤비플렉스',ml:1100,k:550,t:[240,360,480,null,null,null,null]},
+ {c:'POPE',n:'(말초)올리멜4E',ml:1000,k:700,t:[337,504,673,840,1010,null,null]},
+ {c:'SMKP',n:'(말초)스모프',ml:1206,k:832,t:[332,497,664,828,996,1118,1326]},
+ {c:'OMAPLP5',n:'(말초)오마프플러스원',ml:500,k:345.4,t:[332,null,null,null,null,null,null]},
+ {c:'OMAP5',n:'(말초)오마프원',ml:500,k:333.104,t:[319.77984,null,null,null,null,null,null]},
+ {c:'C10',n:'(중심)콤비플렉스',ml:1000,k:1170,t:[562,842,1123,null,null,null,null]},
+ {c:'OLN',n:'(중심)올리멜12E',ml:1000,k:950,t:[456,684,912,1140,1368,null,null]},
+ {c:'OL',n:'(중심)올리멜9E',ml:1000,k:1070,t:[513.6,770,1027,1284,1540.8,null,null]},
+ {c:'NTS',n:'(중심)엔텐스',ml:506,k:450,t:[427,640,854,null,null,null,null]},
+ {c:'SMOK',n:'(중심)스모프',ml:986,k:1075,t:[524,785,1048,1308,1571,1766,2095]}
+];
+// HD별 목표 비율 (프로토콜표)
 var HD=[['HD2',0.25],['HD3',0.5],['HD4',0.75],['HD5~',1]];
 
 var $=function(id){return document.getElementById(id)};
@@ -137,48 +145,52 @@ var nf=new Intl.NumberFormat('ko-KR',{maximumFractionDigits:0});
 var fmt=function(v){return nf.format(clean(v))};
 var num=function(el){var v=parseFloat(el.value);return isFinite(v)&&v>0?v:0};
 
-// select 채우기
 var sel=$('nts');
-sel.innerHTML='<option value="">선택 안 함</option>'+Object.keys(TABLE).map(function(k){
-  return '<option value="'+k+'">'+k+' ('+NAMES[k]+')</option>';
+// 코드를 앞에 두어 칸이 좁아 이름이 잘려도 제제를 구분할 수 있게 함
+sel.innerHTML='<option value=""></option>'+P.map(function(p,i){
+  return '<option value="'+i+'">'+p.c+' ('+p.n.replace(/^\((말초|중심)\)/,'$1')+')</option>';
 }).join('');
-sel.value='NTS';
+sel.value='';
 
-// 표 행 만들기
-var tbody=$('rows');
-tbody.innerHTML=HD.map(function(r,i){
-  return '<tr>'+
-   '<td data-label="HD">'+r[0]+'<span class="ratio">'+Math.round(r[1]*100)+'%</span><span class="ratio">목표 총 공급량: <span id="tot'+i+'"></span></span></td>'+
-   '<td data-label="EN 공급량 (kcal)"><label class="cell in"><input id="en'+i+'" type="number" inputmode="decimal" min="0" step="any" value="0" aria-label="'+r[0]+' EN 공급량"><em>kcal</em></label></td>'+
-   '<td data-label="수액 속도"><output class="cell out" id="rate'+i+'"></output><span class="cap" id="cap'+i+'"></span></td>'+
-   '</tr>';
+$('rows').innerHTML=HD.map(function(r,i){
+  return '<div class="hd">'+
+   '<div class="hdh">'+r[0]+'<span class="ratio">'+Math.round(r[1]*100)+'%</span><span class="ratio sub">목표 총 공급량: <span id="tot'+i+'"></span></span></div>'+
+   '<label class="fld"><span class="lab">EN 공급량 (kcal)</span><span class="cell in"><input id="en'+i+'" type="number" inputmode="decimal" min="0" step="any" aria-label="'+r[0]+' EN 공급량"><em>kcal</em></span></label>'+
+   '<div class="fld"><span class="lab">수액 속도</span><output class="cell out" id="rate'+i+'"></output><span class="cap" id="cap'+i+'"></span></div>'+
+   '<p class="sm"><span>PN 공급량: <span id="pn'+i+'"></span></span><span>총 공급 열량: <span id="sum'+i+'"></span></span></p>'+
+   '</div>';
 }).join('');
 
-function lookup(code,e){
-  var col=TABLE[code]; if(!col) return null;
+function lookup(p,e){
   var rate=0,max=0;
-  for(var i=0;i<col.length;i++){
-    if(col[i]===null) continue;
-    max=col[i];
-    if(col[i]<=e) rate=RATES[i];
+  for(var i=0;i<p.t.length;i++){
+    if(p.t[i]===null) continue;
+    max=p.t[i];
+    if(clean(p.t[i])<=e) rate=RATES[i];
   }
   return {rate:rate,over:e>max};
 }
 
 function render(){
-  var tcn=round100(num($('h'))*num($('h'))*22*0.0001*25);
-  $('tcn').innerHTML=fmt(tcn)+' <em>kcal</em>';
-  var dexK=num($('dex'))*4.07;
-  $('dexk').innerHTML=fmt(dexK)+' <em>kcal</em>';
-  var target=num($('target'));
+  var h=num($('h'));
+  var lo=round100(h*h*22*0.0001*25), hi=round100(h*h*22*0.0001*30);
+  $('tcn').textContent=h>0?fmt(lo)+'~'+fmt(hi)+' kcal':'-';
+  var dex=num($('d5'))*4.08+num($('d10'))*8.16;
+  $('dexk').innerHTML=(dex>0?'<span class="v">'+fmt(dex)+'</span>':'')+'<em>kcal</em>';
+  var raw=$('target').value.trim();
+  var target=raw===''?lo:num($('target'));
+  var p=sel.value===''?null:P[+sel.value];
   HD.forEach(function(r,i){
     var total=round100(target*r[1]);
     var en=num($('en'+i));
-    var rem=clean(Math.max(0,total-en-dexK));
+    var rem=clean(Math.max(0,total-en-dex));
     $('tot'+i).textContent=fmt(total)+'kcal';
-    var res=lookup(sel.value,rem);
-    $('rate'+i).innerHTML=res===null?'<span class="muted">-</span>':fmt(res.rate)+' <em>cc/hr</em>';
+    var res=p?lookup(p,rem):null;
+    var pn=res?res.rate*24*p.k/p.ml:0;
+    $('rate'+i).innerHTML=res?fmt(res.rate)+' <em>cc/hr</em>':'<span class="muted">-</span>';
     $('cap'+i).textContent=res&&res.over?'※ 최대 속도':'';
+    $('pn'+i).textContent=res?fmt(pn)+'kcal':'-';
+    $('sum'+i).textContent=fmt(en+pn+dex)+'kcal';
   });
 }
 
@@ -186,6 +198,7 @@ document.addEventListener('input',render);
 document.addEventListener('change',render);
 document.addEventListener('focusin',function(e){if(e.target.tagName==='INPUT')e.target.select()});
 render();
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
 </script>
 </body>
 </html>
