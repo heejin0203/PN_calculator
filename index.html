@@ -40,8 +40,6 @@
 }
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *,*::before,*::after{box-sizing:inherit}
-html,body,button{touch-action:manipulation}
-.rst{-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
 body{margin:0;background:var(--bg);color:var(--ink);
   font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
   font-size:15px;line-height:1.5;-webkit-text-size-adjust:100%}
@@ -53,11 +51,13 @@ h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-.01em}
 .legend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px;border:1px solid}
 .legend .li{background:var(--in);border-color:var(--in-line)}
 .legend .lo{background:var(--out);border-color:var(--out-line)}
-.hist{margin-left:auto;display:inline-flex;gap:6px}
-.rst{all:unset;box-sizing:border-box;display:inline-flex;justify-content:center;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-size:13px;cursor:pointer}
-.rst:hover:not(:disabled){border-color:var(--navy)}
-.rst:disabled{opacity:.35;cursor:default}
+.rst{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-size:13px;cursor:pointer}
+.rst:hover{border-color:var(--navy)}
 .rst:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.hb{margin-left:auto;display:inline-flex;gap:6px}
+.rst.ic{padding:7px 10px;min-width:36px;justify-content:center}
+.rst:disabled{opacity:.35;cursor:default}
+.rst:disabled:hover{border-color:var(--line)}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 16px 6px;margin-bottom:16px}
 .g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:end;margin-bottom:12px}
 .fld{display:flex;flex-direction:column;gap:4px;min-width:0}
@@ -84,12 +84,24 @@ h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-.01em}
 .ratio{margin-left:8px;font-size:13px;font-weight:400;color:var(--muted)}
 .ratio.sub{display:block;margin:2px 0 0}
 .sm{grid-column:2/4;display:flex;flex-wrap:wrap;gap:2px 16px;margin:0;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
-.sm>span:last-child{margin-left:auto;text-align:right}
+.sm>span:last-child{margin-left:auto}
 .muted{color:var(--muted)}
 .cap{display:block;font-size:11px;color:var(--muted);margin-top:2px}
 .note{margin:6px 0 12px;font-size:13px;color:var(--muted)}
 .tcn{margin:-4px 2px 14px;font-size:14px;font-weight:700}
 .tcn b{font-weight:700;margin-left:8px}
+[hidden]{display:none!important}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:end;margin-bottom:12px}
+.tcnbox{display:flex;flex-direction:column;gap:2px;margin:4px 0 12px}
+.tcnbox b{font-size:22px;font-weight:700}
+.plain{display:flex;align-items:center;min-height:38px;font-size:15px;line-height:1.3}
+.plain b{font-weight:700}
+.tcnline{margin:0 0 12px;font-size:14px;font-weight:700}
+.tcnline b{margin-left:8px}
+.btn{all:unset;box-sizing:border-box;display:block;width:100%;text-align:center;min-height:46px;line-height:46px;border-radius:10px;background:var(--navy);color:#fff;font-weight:700;font-size:16px;cursor:pointer;margin-bottom:16px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn:focus-visible,.lnk:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.lnk{all:unset;display:inline-block;cursor:pointer;color:var(--ink);font-size:14px;font-weight:500;padding:4px 2px;margin:0 0 10px}
 @media (max-width:640px){
   .wrap{padding-top:20px}
   .panel{padding:14px 12px 4px}
@@ -102,29 +114,40 @@ h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-.01em}
 <body>
 <main class="wrap">
   <h1>PN 계산기</h1>
-  <p class="by">made by. 의정부성모병원 NST 2026</span></p>
-  <p class="legend"><span><i class="li"></i>입력</span><span><i class="lo"></i>계산 결과</span><span class="hist"><button type="button" id="undo" class="rst" aria-label="뒤로 가기" disabled><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18 4v16L5 12z"/></svg></button><button type="button" id="reset" class="rst" aria-label="초기화"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 4v5h-5"/></svg></button><button type="button" id="redo" class="rst" aria-label="앞으로 가기" disabled><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4v16l13-8z"/></svg></button></span></p>
+  <p class="by">made by. 의정부성모병원 NST 2026</p>
+  <p class="legend"><span><i class="li"></i>입력</span><span><i class="lo"></i>계산 결과</span><span class="hb"><button type="button" id="undo" class="rst ic" aria-label="되돌리기" title="되돌리기" disabled><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="19,3 19,21 4,12"/></svg></button><button type="button" id="reset" class="rst ic" aria-label="초기화" title="초기화"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 4v5h-5"/></svg></button><button type="button" id="redo" class="rst ic" aria-label="다시 실행" title="다시 실행" disabled><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 5,21 20,12"/></svg></button></span></p>
 
-  <section class="panel top">
-    <div class="g3">
-      <label class="fld" for="h"><span class="lab">키</span><span class="cell in"><input id="h" type="number" inputmode="decimal" min="0" step="any"><em>cm</em></span></label>
-      <label class="fld" for="target"><span class="lab">목표 열량</span><span class="cell in"><input id="target" type="number" inputmode="decimal" min="0" step="any"><em>kcal</em></span></label>
-      <label class="fld" for="nts"><span class="lab">PN 제제</span><span class="cell in sel"><select id="nts"></select></span></label>
-    </div>
-    <div class="g3">
-      <label class="fld" for="d5"><span class="lab">5% dex 공급 속도</span><span class="cell in"><input id="d5" type="number" inputmode="decimal" min="0" step="any"><em>cc/hr</em></span></label>
-      <label class="fld" for="d10"><span class="lab">10% dex 공급 속도</span><span class="cell in"><input id="d10" type="number" inputmode="decimal" min="0" step="any"><em>cc/hr</em></span></label>
-      <div class="fld"><span class="lab">dextrose 공급 열량</span><output class="cell out" id="dexk"></output></div>
-    </div>
-  </section>
+  <div id="s1">
+    <section class="panel top">
+      <div class="g2">
+        <label class="fld" for="sex"><span class="lab">성별</span><span class="cell in sel"><select id="sex"><option value=""></option><option value="M">남</option><option value="F">여</option></select></span></label>
+        <label class="fld" for="h"><span class="lab">키</span><span class="cell in"><input id="h" type="number" inputmode="decimal" min="0" step="any"><em>cm</em></span></label>
+      </div>
+      <div class="tcnbox"><span class="lab">TCN (IBW x 25~30)</span><b id="tcn">-</b></div>
+    </section>
+    <button type="button" id="next" class="btn" disabled>다음</button>
+  </div>
 
-  <p class="tcn">TCN (IBW x 25~30)<b id="tcn"></b></p>
+  <div id="s2" hidden>
+    <button type="button" id="back" class="lnk">‹ 이전</button>
+    <section class="panel top">
+      <p class="tcnline">TCN (IBW x 25~30)<b id="tcn2">-</b></p>
+      <div class="g2">
+        <label class="fld" for="target"><span class="lab">목표 열량</span><span class="cell in"><input id="target" type="number" inputmode="decimal" min="0" step="any"><em>kcal</em></span></label>
+        <label class="fld" for="nts"><span class="lab">PN 제제</span><span class="cell in sel"><select id="nts"></select></span></label>
+      </div>
+      <div class="g3">
+        <label class="fld" for="d5"><span class="lab">5% dex 공급 속도</span><span class="cell in"><input id="d5" type="number" inputmode="decimal" min="0" step="any"><em>cc/hr</em></span></label>
+        <label class="fld" for="d10"><span class="lab">10% dex 공급 속도</span><span class="cell in"><input id="d10" type="number" inputmode="decimal" min="0" step="any"><em>cc/hr</em></span></label>
+        <div class="fld"><span class="lab">dextrose 공급 열량</span><output class="cell out" id="dexk"></output></div>
+      </div>
+    </section>
 
-  <section class="panel">
-    <div id="rows"></div>
-    <p class="note">※ EN이 목표를 초과하면 PN은 0으로 처리.</p>
-  </section>
-
+    <section class="panel">
+      <div id="rows"></div>
+      <p class="note">※ EN이 목표를 초과하면 PN은 0으로 처리.</p>
+    </section>
+  </div>
 </main>
 
 <script>
@@ -151,6 +174,7 @@ var round100=function(v){return Math.round(+(clean(v)/100).toPrecision(12))*100}
 var nf=new Intl.NumberFormat('ko-KR',{maximumFractionDigits:0});
 var fmt=function(v){return nf.format(clean(v))};
 var num=function(el){var v=parseFloat(el.value);return isFinite(v)&&v>0?v:0};
+var ready=function(){return num($('h'))>0&&$('sex').value!==''};
 
 var sel=$('nts');
 // 코드를 앞에 두어 칸이 좁아 이름이 잘려도 제제를 구분할 수 있게 함
@@ -180,8 +204,11 @@ function lookup(p,e){
 
 function render(){
   var h=num($('h'));
-  var lo=round100(h*h*22*0.0001*25), hi=round100(h*h*22*0.0001*30);
-  $('tcn').textContent=h>0?fmt(lo)+'~'+fmt(hi)+' kcal':'-';
+  var ok=ready(), coef=$('sex').value==='F'?21:22; // IBW = 키² × 계수 (남 22, 여 21)
+  var lo=ok?round100(h*h*coef*0.0001*25):0, hi=ok?round100(h*h*coef*0.0001*30):0;
+  var t=ok?fmt(lo)+'~'+fmt(hi)+' kcal':'-';
+  $('tcn').textContent=t; $('tcn2').textContent=t;
+  $('next').disabled=!ok;
   var dex=num($('d5'))*4.08+num($('d10'))*8.16;
   $('dexk').innerHTML='<span class="v">'+(dex>0?fmt(dex):'&#8203;')+'</span><em>kcal</em>';
   var raw=$('target').value.trim();
@@ -201,42 +228,71 @@ function render(){
   });
 }
 
-var IDS=['h','target','d5','d10','en0','en1','en2','en3'];
-var snap=function(){return JSON.stringify(IDS.map(function(id){return $(id).value}).concat(sel.value))};
-var hist=[snap()],idx=0,MAX=100;
-var undoB=$('undo'),redoB=$('redo');
-function btns(){undoB.disabled=idx<=0;redoB.disabled=idx>=hist.length-1}
-function commit(){
-  var s=snap();
-  if(s===hist[idx])return;
-  hist=hist.slice(0,idx+1);hist.push(s);
-  if(hist.length>MAX)hist.shift();
-  idx=hist.length-1;btns();
-}
-function restore(s){
-  var a=JSON.parse(s);
-  IDS.forEach(function(id,k){$(id).value=a[k]});
-  sel.value=a[IDS.length];
-  render();btns();
-}
-function go(d){
-  commit();
-  var n=idx+d;
-  if(n<0||n>=hist.length)return;
-  idx=n;restore(hist[idx]);
-}
 document.addEventListener('input',render);
-document.addEventListener('change',function(){render();commit()});
-document.addEventListener('focusout',function(e){if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')commit()});
+document.addEventListener('change',render);
 document.addEventListener('focusin',function(e){if(e.target.tagName==='INPUT')e.target.select()});
-undoB.addEventListener('click',function(){go(-1)});
-redoB.addEventListener('click',function(){go(1)});
+// 입력 기록(◀ ▶): 칸을 벗어날 때(change)만 기록하고, 페이지별로 따로 관리
+var H1=mkHist(['sex','h']), H2=mkHist(['target','nts','d5','d10','en0','en1','en2','en3']);
+function mkHist(ids){
+  var snap=function(){return ids.map(function(id){return $(id).value})};
+  var st=[snap()],pos=0;
+  var dirty=function(){return JSON.stringify(snap())!==JSON.stringify(st[pos])};
+  return {
+    dirty:dirty,
+    canUndo:function(){return pos>0||dirty()},
+    canRedo:function(){return !dirty()&&pos<st.length-1},
+    commit:function(){
+      if(!dirty())return;
+      st.length=pos+1;st.push(snap());
+      if(st.length>100)st.shift();
+      pos=st.length-1;
+    },
+    go:function(d){
+      var n=pos+d;if(n<0||n>=st.length)return;
+      pos=n;ids.forEach(function(id,i){$(id).value=st[pos][i]});
+    }
+  };
+}
+function cur(){return $('s2').hidden?H1:H2}
+function syncHist(){var h=cur();$('undo').disabled=!h.canUndo();$('redo').disabled=!h.canRedo()}
+document.addEventListener('input',syncHist);
+document.addEventListener('change',function(){cur().commit();syncHist()});
+$('undo').addEventListener('click',function(){var h=cur();h.commit();h.go(-1);render();syncHist()});
+$('redo').addEventListener('click',function(){var h=cur();h.commit();h.go(1);render();syncHist()});
+
+// 화면 전환: 1페이지(성별·키) ↔ 2페이지(#calc)
+var pushed=false;
+function route(){
+  H1.commit();H2.commit();
+  var on=location.hash==='#calc'&&ready();
+  $('s1').hidden=on; $('s2').hidden=!on;
+  window.scrollTo(0,0);
+  syncHist();
+}
+function goFirst(){
+  if(location.hash!=='#calc'){route();return}
+  if(pushed){pushed=false;history.back();return}
+  try{history.replaceState(null,'',location.pathname+location.search)}catch(e){location.hash=''}
+  route();
+}
+$('next').addEventListener('click',function(){
+  if(location.hash==='#calc'){route();return}
+  pushed=true;location.hash='calc';
+});
+$('back').addEventListener('click',goFirst);
+window.addEventListener('hashchange',route);
+
 $('reset').addEventListener('click',function(){
-  IDS.forEach(function(id){$(id).value=''});
+  var first=$('s2').hidden; // 1페이지에서 누르면 2페이지 값도 함께 초기화
+  H1.commit(); H2.commit();
+  if(first){ $('sex').value=''; $('h').value=''; }
+  ['target','d5','d10'].forEach(function(id){$(id).value=''});
+  HD.forEach(function(r,i){$('en'+i).value=''});
   sel.value='';
-  render();commit();
+  render(); H1.commit(); H2.commit(); syncHist();
 });
 render();
+route();
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
 </script>
 </body>
