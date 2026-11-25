@@ -51,8 +51,10 @@ h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-.01em}
 .legend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px;border:1px solid}
 .legend .li{background:var(--in);border-color:var(--in-line)}
 .legend .lo{background:var(--out);border-color:var(--out-line)}
-.rst{all:unset;box-sizing:border-box;margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-size:13px;cursor:pointer}
-.rst:hover{border-color:var(--navy)}
+.hist{margin-left:auto;display:inline-flex;gap:6px}
+.rst{all:unset;box-sizing:border-box;display:inline-flex;justify-content:center;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-size:13px;cursor:pointer}
+.rst:hover:not(:disabled){border-color:var(--navy)}
+.rst:disabled{opacity:.35;cursor:default}
 .rst:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 16px 6px;margin-bottom:16px}
 .g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:end;margin-bottom:12px}
@@ -99,7 +101,7 @@ h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-.01em}
 <main class="wrap">
   <h1>PN 계산기</h1>
   <p class="by">made by. 의정부성모병원 NST 2026</span></p>
-  <p class="legend"><span><i class="li"></i>입력</span><span><i class="lo"></i>계산 결과</span><button type="button" id="reset" class="rst" aria-label="초기화"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 4v5h-5"/></svg>초기화</button></p>
+  <p class="legend"><span><i class="li"></i>입력</span><span><i class="lo"></i>계산 결과</span><span class="hist"><button type="button" id="undo" class="rst" aria-label="뒤로 가기" disabled><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18 4v16L5 12z"/></svg></button><button type="button" id="reset" class="rst" aria-label="초기화"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 4v5h-5"/></svg></button><button type="button" id="redo" class="rst" aria-label="앞으로 가기" disabled><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4v16l13-8z"/></svg></button></span></p>
 
   <section class="panel top">
     <div class="g3">
@@ -197,14 +199,40 @@ function render(){
   });
 }
 
+var IDS=['h','target','d5','d10','en0','en1','en2','en3'];
+var snap=function(){return JSON.stringify(IDS.map(function(id){return $(id).value}).concat(sel.value))};
+var hist=[snap()],idx=0,MAX=100;
+var undoB=$('undo'),redoB=$('redo');
+function btns(){undoB.disabled=idx<=0;redoB.disabled=idx>=hist.length-1}
+function commit(){
+  var s=snap();
+  if(s===hist[idx])return;
+  hist=hist.slice(0,idx+1);hist.push(s);
+  if(hist.length>MAX)hist.shift();
+  idx=hist.length-1;btns();
+}
+function restore(s){
+  var a=JSON.parse(s);
+  IDS.forEach(function(id,k){$(id).value=a[k]});
+  sel.value=a[IDS.length];
+  render();btns();
+}
+function go(d){
+  commit();
+  var n=idx+d;
+  if(n<0||n>=hist.length)return;
+  idx=n;restore(hist[idx]);
+}
 document.addEventListener('input',render);
-document.addEventListener('change',render);
+document.addEventListener('change',function(){render();commit()});
+document.addEventListener('focusout',function(e){if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')commit()});
 document.addEventListener('focusin',function(e){if(e.target.tagName==='INPUT')e.target.select()});
+undoB.addEventListener('click',function(){go(-1)});
+redoB.addEventListener('click',function(){go(1)});
 $('reset').addEventListener('click',function(){
-  ['h','target','d5','d10'].forEach(function(id){$(id).value=''});
-  HD.forEach(function(r,i){$('en'+i).value=''});
+  IDS.forEach(function(id){$(id).value=''});
   sel.value='';
-  render();
+  render();commit();
 });
 render();
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
