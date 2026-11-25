@@ -47,7 +47,7 @@ body{margin:0;background:var(--bg);color:var(--ink);
 h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-.01em}
 .by{margin:2px 0 0;color:var(--muted);font-size:13px}
 .how{margin:14px 0 6px;font-size:13.5px}
-.legend{display:flex;gap:14px;align-items:center;margin:0 0 16px;font-size:13px;color:var(--muted)}
+.legend{display:flex;gap:14px;align-items:center;margin:22px 0 16px;font-size:13px;color:var(--muted)}
 .legend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px;border:1px solid}
 .legend .li{background:var(--in);border-color:var(--in-line)}
 .legend .lo{background:var(--out);border-color:var(--out-line)}
@@ -176,7 +176,7 @@ function render(){
   var lo=round100(h*h*22*0.0001*25), hi=round100(h*h*22*0.0001*30);
   $('tcn').textContent=h>0?fmt(lo)+'~'+fmt(hi)+' kcal':'-';
   var dex=num($('d5'))*4.08+num($('d10'))*8.16;
-  $('dexk').innerHTML=(dex>0?'<span class="v">'+fmt(dex)+'</span>':'')+'<em>kcal</em>';
+  $('dexk').innerHTML='<span class="v">'+(dex>0?fmt(dex):'&#8203;')+'</span><em>kcal</em>';
   var raw=$('target').value.trim();
   var target=raw===''?lo:num($('target'));
   var p=sel.value===''?null:P[+sel.value];
