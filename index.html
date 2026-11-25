@@ -156,7 +156,7 @@ sel.value='';
 
 $('rows').innerHTML=HD.map(function(r,i){
   return '<div class="hd">'+
-   '<div class="hdh">'+r[0]+'<span class="ratio">'+Math.round(r[1]*100)+'%</span><span class="ratio sub">목표 공급 열량: <span id="tot'+i+'"></span></span></div>'+
+   '<div class="hdh">'+r[0]+'<span class="ratio">목표 열량의 '+Math.round(r[1]*100)+'%: <span id="tot'+i+'"></span></span></div>'+
    '<label class="fld"><span class="lab">EN 공급량</span><span class="cell in"><input id="en'+i+'" type="number" inputmode="decimal" min="0" step="any" aria-label="'+r[0]+' EN 공급량"><em>kcal</em></span></label>'+
    '<div class="fld"><span class="lab">PN 추천 속도</span><output class="cell out" id="rate'+i+'"></output><span class="cap" id="cap'+i+'"></span></div>'+
    '<p class="sm"><span>PN 공급량: <span id="pn'+i+'"></span></span><span>총 공급 열량: <span id="sum'+i+'"></span></span></p>'+
@@ -186,7 +186,7 @@ function render(){
     var total=round100(target*r[1]);
     var en=num($('en'+i));
     var rem=clean(Math.max(0,total-en-dex));
-    $('tot'+i).textContent=fmt(total)+'kcal';
+    $('tot'+i).textContent=total>0?fmt(total)+'kcal':'-kcal';
     var res=p?lookup(p,rem):null;
     var pn=res?res.rate*24*p.k/p.ml:0;
     $('rate'+i).innerHTML=res?fmt(res.rate)+' <em>cc/hr</em>':'<span class="muted">-</span>';
