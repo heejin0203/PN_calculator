@@ -154,7 +154,7 @@ sel.value='';
 
 $('rows').innerHTML=HD.map(function(r,i){
   return '<div class="hd">'+
-   '<div class="hdh">'+r[0]+'<span class="ratio">'+Math.round(r[1]*100)+'%</span><span class="ratio sub">목표 총 공급량: <span id="tot'+i+'"></span></span></div>'+
+   '<div class="hdh">'+r[0]+'<span class="ratio">'+Math.round(r[1]*100)+'%</span><span class="ratio sub">목표 공급 열량: <span id="tot'+i+'"></span></span></div>'+
    '<label class="fld"><span class="lab">EN 공급량</span><span class="cell in"><input id="en'+i+'" type="number" inputmode="decimal" min="0" step="any" aria-label="'+r[0]+' EN 공급량"><em>kcal</em></span></label>'+
    '<div class="fld"><span class="lab">PN 추천 속도</span><output class="cell out" id="rate'+i+'"></output><span class="cap" id="cap'+i+'"></span></div>'+
    '<p class="sm"><span>PN 공급량: <span id="pn'+i+'"></span></span><span>총 공급 열량: <span id="sum'+i+'"></span></span></p>'+
