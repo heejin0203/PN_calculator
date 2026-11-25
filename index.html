@@ -95,7 +95,7 @@ h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-.01em}
 <body>
 <main class="wrap">
   <h1>PN 계산기</h1>
-  <p class="by">made by. 의정부성모병원 NST 2026</p>
+  <p class="by">made by. 의정부성모병원 NST 2026</span></p>
   <p class="legend"><span><i class="li"></i>입력</span><span><i class="lo"></i>계산 결과</span></p>
 
   <section class="panel top">
@@ -155,8 +155,8 @@ sel.value='';
 $('rows').innerHTML=HD.map(function(r,i){
   return '<div class="hd">'+
    '<div class="hdh">'+r[0]+'<span class="ratio">'+Math.round(r[1]*100)+'%</span><span class="ratio sub">목표 총 공급량: <span id="tot'+i+'"></span></span></div>'+
-   '<label class="fld"><span class="lab">EN 공급량 (kcal)</span><span class="cell in"><input id="en'+i+'" type="number" inputmode="decimal" min="0" step="any" aria-label="'+r[0]+' EN 공급량"><em>kcal</em></span></label>'+
-   '<div class="fld"><span class="lab">수액 속도</span><output class="cell out" id="rate'+i+'"></output><span class="cap" id="cap'+i+'"></span></div>'+
+   '<label class="fld"><span class="lab">EN 공급량</span><span class="cell in"><input id="en'+i+'" type="number" inputmode="decimal" min="0" step="any" aria-label="'+r[0]+' EN 공급량"><em>kcal</em></span></label>'+
+   '<div class="fld"><span class="lab">PN 추천 속도</span><output class="cell out" id="rate'+i+'"></output><span class="cap" id="cap'+i+'"></span></div>'+
    '<p class="sm"><span>PN 공급량: <span id="pn'+i+'"></span></span><span>총 공급 열량: <span id="sum'+i+'"></span></span></p>'+
    '</div>';
 }).join('');
